@@ -1,0 +1,159 @@
+:root {
+    --primary: #39aa14;
+    --secondary: white;
+    --light: white;
+    --dark: #0f0f0f;
+
+  }
+  @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200;700&display=swap");
+  body {
+    background: url("https://wallpapers-hub.art/wallpaper-images/279547.jpg")
+      no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  .middle {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+  }
+
+  .rounded{
+    border-radius: 50%;
+  }
+  
+  .primary{
+    color: var(--primary) 
+  }
+
+  .underlined{
+    text-decoration: underlined;
+  }
+    
+  /* Main Body */
+  .side {
+    height: 100%;
+  }
+  .main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .mbtn {
+    margin: 10px;
+    border-radius: 50px;
+    padding: 0 1rem;
+    padding-bottom: 5px;
+    margin-right: 5%;
+    transition: transform 0.2s;
+  }
+  
+  .mbtn[id="button1"] {
+    background-color: var(--primary);
+  }
+  .mbtn[id="button2"] {
+    color: var(--secondary);
+  }
+  
+  .mbtn:hover {
+    transform: scale(1.1);
+  }
+  
+  .mbtn[id="button1"]:hover {
+    background-color: var(--secondary);
+    color: var(--primary);
+    border: 0px;
+  }
+  
+  .mbtn[id="button2"]:hover {
+    background-color: var(--secondary);
+    color: black;
+    border: 0px;
+  }
+  
+  /* Color Changer Button */
+  
+  .cardContainer {
+    background-image: linear-gradient(to right, var(--secondary),white );
+    max-width: 30rem;
+    max-height: 60rem;
+    justify-content: center;
+    padding: 2rem;
+    margin: auto;
+    text-align: center;
+    border-radius: 0px 25px;
+    box-shadow: 0px 0px 5px 1px #dfdfdf;
+    transition: transform 0.5s;
+  }
+  
+  .cardContainer:hover {
+    box-shadow: 0px 0px 1px #dfdfdf;
+    background-image: linear-gradient(to left, var(--light), var(--light));
+  }
+  
+  .innerText {
+    font-family: Raleway;
+    font-weight: bold;
+  }
+  
+  #modalButton {
+    background-color: var(--primary);
+    border-radius: 30px;
+    margin: auto;
+    margin-top: -5px;
+    margin-bottom: 5px;
+    border: 2px var(--primary);
+  }
+  
+  #modalButton:hover {
+    background-color: var(--secondary);
+    color: var(--primary);
+  }
+  
+  .close {
+    background-color: var(--primary);
+    margin-top: 20px;
+  }
+  
+  h1,
+  h2,
+  h3 {
+    color: var(--secondary);
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+  }
+  h1 {
+    font-size: 8vw;
+  }
+  .title2 {
+    font-size: 1vw;
+    margin-top: -10px;
+    font-style: italic;
+    font-weight: 100;
+    font-family: cursive;
+  }
+  @media (min-width: 568px) {
+    .side {
+      width: 50%;
+    }
+  }
+  @media (max-width: 568px) {
+    h1 {
+      font-size: 3rem;
+    }
+    .title2 {
+      font-size: 1rem;
+    }
+  }
+  

@@ -1,0 +1,15 @@
+{%extends "base.html"%} 
+{%block content%}
+<body>
+  <!-- Body -->
+  <div class="container-fluid">
+    <main class="middle">
+      <div class="">
+        <h1 class="title1"><span class="logo">{{"Error :" if error else "Server : "}} </span>{{title}}</h1> <br>
+        <h2 class="title1">{{text}} <a class="primary underlined" href="/">Take me home</a></h2>
+      </div>
+    </main>
+  </div>
+</body>
+
+{%endblock%}

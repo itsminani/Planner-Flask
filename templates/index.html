@@ -1,0 +1,71 @@
+{%extends "base.html"%} {%block content%}
+<body>
+  <!-- Body -->
+  <div class="container-fluid">
+    <main class="middle">
+      <div class="main">
+        <div class="side">
+          <h1 class="title1"><span class="logo">Pla</span>nner</h1>
+          <h2 class="title2">~Providing business Solutions where Needed~</h2>
+        </div>
+        <div class="side">
+          {% if route == 'login' or route!="signup" %} {% include 'login.html'%}
+          {% endif %} {% if route == "signup" %} {% include 'signUp.html'%} {%
+          endif %}
+          <div class="buttonContainer">
+            <button id="button1" class="mbtn btn btn-success btn-lg">
+              More about us
+            </button>
+            <button id="button2" class="mbtn btn btn-lg" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">Check me Out!</button>
+          </div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Choose a Color</h5>
+              <button
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form class="colorPicker">
+                <label for="exampleColorInput" class="form-label"
+                  >Color picker</label
+                >
+                <input
+                  type="color"
+                  class="form-control form-control-color"
+                  id="exampleColorInput"
+                  value="#39aa14"
+                  title="Choose your color"
+                />
+                <input
+                  class="close btn btn-success"
+                  type="submit"
+                  value="Okay"
+                  data-bs-dismiss="modal"
+                />
+              </form>
+            </div>
+            <div class="modal-footer"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+
+{%endblock%}

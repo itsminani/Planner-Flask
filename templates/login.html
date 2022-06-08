@@ -1,0 +1,30 @@
+<h2 class="title1">Login</h2>
+<div class="card cardContainer">
+  <p class="innerText">We'll Do it your way!</p>
+  <h4 class="innerText primary">Login</h4>
+
+  <form action="login" method="post">
+    <div class="input mb-3">
+      <label for="email" class="form-label"
+        >Email address</label
+      >
+      <input
+        autofocus
+        autocapitalize="on"
+        type="email"
+        name="email"
+        class="rounded form-control"
+        placeholder="name@example.com"
+      />
+      <label for="password" class="form-label">Password</label>
+      <input name = "password" type="password" class="rounded form-control" />
+    </div>
+    <button id="modalButton" type="submit" class="btn btn-success btn-md">
+      Log in
+    </button>
+  </form>
+  <p class="">
+    Don't Have an account?
+    <a class="primary underlined" href="/signup">Create Account</a>
+  </p>
+</div>
