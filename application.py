@@ -1,7 +1,21 @@
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask,flash, render_template,request,redirect
+from flask_sqlalchemy import SQLAlchemy
+from models import *
 
 application = Flask(__name__)
 app=application
+
+# Ensure templates are auto-reloaded
+# ! app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SECRET_KEY"] = "my crazy key"
+# Configure database
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.sqlite3"
+# Initialiaze SQLAlchemy
+
+db=SQLAlchemy(app)
+
 
 @app.after_request
 def after_request(response):
@@ -34,51 +48,51 @@ def index():
 #     db.session.commit()
 #     return render_template("base.html")
 
-# @app.route('/login',methods=["POST","GET"])
-# def login():
-#     if request.method == "POST":
-#         email = request.form.get("email")
-#         password= request.form.get("password")
-#         user = User.query.filter_by(email= email).first()
-#         # Check if the email was found
-#         if user:
-#             if not check_password_hash(user.password_hash,password):
-#                 return render_template("messageTemplate.html", error = False, title= "Wrong!", text = "Wrong username or password")
-#             print("User Logged in")
-#             print("LOGIN function")
-#             return redirect("/signup")
-#         return render_template('messageTemplate.html',  error = True,title = 500, text=user)
-#     return redirect("/",code=302)
+@app.route('/login',methods=["POST","GET"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password= request.form.get("password")
+        user = User.query.filter_by(email= email).first()
+        # Check if the email was found
+        if user:
+            if not check_password_hash(user.password_hash,password):
+                return render_template("messageTemplate.html", error = False, title= "Wrong!", text = "Wrong username or password")
+            print("User Logged in")
+            print("LOGIN function")
+            return redirect("/signup")
+        return render_template('messageTemplate.html',  error = True,title = 500, text=user)
+    return redirect("/",code=302)
 
-# @app.route('/signup',methods=["GET","POST"])
-# def signUp():
+@app.route('/signup',methods=["GET","POST"])
+def sign_up():
 
-#     if request.method == "POST":
-#         # TODO setup FLASH
-#         email = request.form.get("email")
-#         name = request.form.get("name")
-#         password = request.form.get("password")
+    if request.method == "POST":
+        # TODO setup FLASH
+        email = request.form.get("email")
+        name = request.form.get("name")
+        password = request.form.get("password")
 
-#         if not (password and email and name):
-#             return render_template("messageTemplate.html", title= "Oops", text= "Forgot something important")
-#         email_exists = User.query.filter_by(email= email).first()
-#         if email_exists:
-#             return render_template("messageTemplate.html", title= "Oops", text= email_exists.email + " is already taken")
+        if not (password and email and name):
+            return render_template("messageTemplate.html", title= "Oops", text= "Forgot something important")
+        email_exists = User.query.filter_by(email= email).first()
+        if email_exists:
+            return render_template("messageTemplate.html", title= "Oops", text= email_exists.email + " is already taken")
 
-#         password_hash = generate_password_hash(password)
+        password_hash = generate_password_hash(password)
 
         
-#         # TODO Send authentication Email 
-#         # Add new user to the database
-#         new_user = User(email= email, name= name, password_hash= password_hash)
-#         db.session.add(new_user)
-#         db.session.commit()
+        # TODO Send authentication Email 
+        # Add new user to the database
+        new_user = User(email= email, name= name, password_hash= password_hash)
+        db.session.add(new_user)
+        db.session.commit()
 
-#         print("User successfully created")
-#         return redirect("/login")
-#     if request.path=="/signup":
-#         route = "signup"
-#     return render_template("index.html",route=route)
+        print("User successfully created")
+        return redirect("/login")
+    if request.path=="/signup":
+        route = "signup"
+    return render_template("index.html",route=route)
 
 
 
