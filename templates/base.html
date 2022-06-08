@@ -21,23 +21,26 @@
       crossorigin="anonymous"
     ></script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,700&display=swap");
     </style>
     <style>
       html {
         overflow: scroll;
         overflow-x: hidden;
-        }
-        ::-webkit-scrollbar {
+      }
+      ::-webkit-scrollbar {
         width: 3px;
-        }
-        ::-webkit-scrollbar:hover {
+      }
+      ::-webkit-scrollbar:hover {
         width: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
+      }
+      ::-webkit-scrollbar-thumb {
         background: var(--primary);
         border-radius: 10px;
-        }
+      }
+
+      @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200;700&display=swap");
+
+      
     </style>
     <title>Planner</title>
     <link
@@ -66,9 +69,7 @@
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
         </li>
-        <li
-          class="nav-item"
-        >
+        <li class="nav-item">
           <a class="nav-link" href="/signup">Sign Up</a>
         </li>
       </ul>
@@ -76,5 +77,4 @@
     {%block content%}{%endblock%}
     <script src="../static/scripts/index.js"></script>
   </body>
- 
 </html>
