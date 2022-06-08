@@ -39,7 +39,7 @@
   border: none;
   font-size: 2vw;
   font-weight: bold;
-  font-family: Raleway;
+  font-family: Raleway,Arial, Helvetica, sans-serif;
 }
 
 .logo-a {
@@ -165,7 +165,7 @@ body {
 }
 
 .innerText {
-  font-family: Raleway;
+  font-family: Raleway,Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
 
