@@ -1,0 +1,50 @@
+{%extends "base.html"%} 
+{%block content%}
+<body>
+  <!-- Body -->
+  <div class="container-fluid">
+    <main class="middle">
+        <div class="">
+            <h3 class="title2 logo">Account Details</h3> <br>
+            <h4 class="">Name: <span class="logo">{{name}}</span></h4>
+            <h4 class="">Email: <span class="logo">{{email}}</span></h4>
+            <h4 class="">Account Confirmed: <span class="logo">{{confirmed}}</span></h4>
+            <h4 class="">Date of creation: <span class="logo">{{date}}</span></h4>
+        </div>
+        <div class="flex">
+            <button id="button1" class="mbtn btn btn-lg" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">App theme!</button>
+        </div>
+        <div class="flex">
+            <a class="link-item" href="/logout">
+                <button id="button2" class="mbtn btn btn-lg btn-danger"> Logout </button>
+            </a>
+           
+        </div></div>
+    </main>
+  </div>
+</body>
+
+<style>
+.title2{
+    font-size: 6vh;
+}
+#button1{
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+}
+#button1:hover{
+    color: var(--primary)
+}
+.link-item{
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+}
+.flex{
+    display: flex;
+}
+</style>
+{%endblock%}

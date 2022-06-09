@@ -6,6 +6,17 @@
   --dark: #0f0f0f;
 }
 
+h1,
+h2,
+h3,h4,h5,h6,h7 {
+  color: var(--secondary);
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+}
+h1 {
+  font-size: 8vw;
+}
+
 /* Navigation */
 .nav {
   border-radius: 2px;
@@ -78,7 +89,7 @@ body {
 }
 .middle {
   position: absolute;
-  top: 30%;
+  top: 20%;
   left: 0;
   right: 0;
 }
@@ -188,16 +199,7 @@ body {
   margin-top: 20px;
 }
 
-h1,
-h2,
-h3 {
-  color: var(--secondary);
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-}
-h1 {
-  font-size: 8vw;
-}
+
 .title2 {
   font-size: 1vw;
   margin-top: -10px;

@@ -1,7 +1,10 @@
+import email
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask,flash, render_template,request,redirect
+from flask import Flask,flash, render_template,request,redirect, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
 from models import *
+from _helpers import login_required,raise_message
 
 application = Flask(__name__)
 app=application
@@ -9,12 +12,18 @@ app=application
 # Ensure templates are auto-reloaded
 # ! app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SECRET_KEY"] = "my crazy key"
+
 # Configure database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.sqlite3"
-# Initialiaze SQLAlchemy
 
-db=SQLAlchemy(app)
+# Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+# Initialiaze SQLAlchemy
+db = SQLAlchemy(app)
 
 
 @app.after_request
@@ -29,40 +38,57 @@ def after_request(response):
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    return render_template('messageTemplate.html',error=True, title = 404, text="Seems like you have wondered off")
+    return raise_message(404, "Seems like you have wondered off", True)
 
 @app.errorhandler(500)
 def server_error(e):
     # note that we set the 404 status explicitly
-    return render_template('messageTemplate.html',error=True, title = 500, text="oops we fucked up")
+    return raise_message(404, "Oops, a big Oopsie, Server error", True)
 
 # Routing and navigation
 @app.route('/')
 def index():
     return render_template("index.html")
 
-# @app.route('/base')
-# def base():
-#     user= User(name="Mbokolo",email="Email Yanjye",password_hash="password",confirmed=True)
-#     db.session.add(user)
-#     db.session.commit()
-#     return render_template("base.html")
+@app.route('/base')
+@login_required
+def base():
+    return raise_message(session["user_id"], "You are logged in")
+
+@app.route("/account")
+@login_required
+def account():
+    user = User.query.filter_by(id=session["user_id"]).first()
+    return render_template("account.html", name= user.name, email=user.email,confirmed = user.confirmed, date = user.created_at)
 
 @app.route('/login',methods=["POST","GET"])
 def login():
+    """Log user in"""
+
+
+    # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
+        # Forget any user_id
+        session.clear()
+        
         email = request.form.get("email")
         password= request.form.get("password")
         user = User.query.filter_by(email= email).first()
         # Check if the email was found
         if user:
+            # Check if password is right
             if not check_password_hash(user.password_hash,password):
-                return render_template("messageTemplate.html", error = False, title= "Wrong!", text = "Wrong username or password")
-            print("User Logged in")
-            print("LOGIN function")
-            return redirect("/signup")
-        return render_template('messageTemplate.html',  error = True,title = 500, text=user)
+                return raise_message("Wrong!", "Wrong username or password")
+
+            # Remember which user has logged in
+            print(user.id)
+            session["user_id"] = user.id
+            return raise_message("Success", "Login successfull")
+        else:
+            return raise_message("Wrong!", "Wrong username or password")
+    # Redirect to home if the request is GET
     return redirect("/",code=302)
+
 
 @app.route('/signup',methods=["GET","POST"])
 def sign_up():

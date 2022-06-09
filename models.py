@@ -1,6 +1,8 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
+# Instanciate database without having cirvular import issue
+db = SQLAlchemy()
 
 class User(db.Model):
     # ! Create users database
@@ -29,14 +31,14 @@ class Event(db.Model):
     # Relationships
     user = db.relationship('User')
 
-    # def __repr__(self):
-    #     return "<Event %r>" % self.id
+    def __repr__(self):
+        return "<Event %r>" % self.id
 
 if __name__ == "__main__":
 
     # Run this file directly to create the database tables.
-    from application import db
-    
+    from application import app
+    db=SQLAlchemy(app)
     # r = input("Are you sure you would like to drop and delete all the elements of this database? ")
     # db.drop_all() if r == "delete" else print("No tables Dropped")
     # print("Creating database tables...")
