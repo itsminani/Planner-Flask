@@ -70,7 +70,7 @@ def login():
     if request.method == "POST":
         # Forget any user_id
         session.clear()
-        
+
         email = request.form.get("email")
         password= request.form.get("password")
         user = User.query.filter_by(email= email).first()
@@ -88,6 +88,11 @@ def login():
             return raise_message("Wrong!", "Wrong username or password")
     # Redirect to home if the request is GET
     return redirect("/",code=302)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return raise_message("Success", "Logged out")
 
 
 @app.route('/signup',methods=["GET","POST"])
