@@ -1,20 +1,19 @@
-import email
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask,flash, render_template,request,redirect, session
+from flask import Flask, flash, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from models import *
-from _helpers import login_required,raise_message
+from _helpers import login_required, raise_message
 
 application = Flask(__name__)
-app=application
+app = application
 
 # Ensure templates are auto-reloaded
 # ! app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SECRET_KEY"] = "my crazy key"
 
 # Configure database
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.sqlite3"
 
 # Configure session to use filesystem (instead of signed cookies)
@@ -35,10 +34,13 @@ def after_request(response):
     return response
 
 # Handle pages that do not exist
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return raise_message(404, "Seems like you have wondered off", True)
+
 
 @app.errorhandler(500)
 def server_error(e):
@@ -46,25 +48,29 @@ def server_error(e):
     return raise_message(404, "Oops, a big Oopsie, Server error", True)
 
 # Routing and navigation
+
+
 @app.route('/')
 def index():
     return render_template("index.html")
+
 
 @app.route('/base')
 @login_required
 def base():
     return raise_message(session["user_id"], "You are logged in")
 
+
 @app.route("/account")
 @login_required
 def account():
     user = User.query.filter_by(id=session["user_id"]).first()
-    return render_template("account.html", name= user.name, email=user.email,confirmed = user.confirmed, date = user.created_at)
+    return render_template("account.html", name=user.name, email=user.email, confirmed=user.confirmed, date=user.created_at)
 
-@app.route('/login',methods=["POST","GET"])
+
+@app.route('/login', methods=["POST", "GET"])
 def login():
     """Log user in"""
-
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -72,30 +78,33 @@ def login():
         session.clear()
 
         email = request.form.get("email")
-        password= request.form.get("password")
-        user = User.query.filter_by(email= email).first()
+        password = request.form.get("password")
+        user = User.query.filter_by(email=email).first()
         # Check if the email was found
         if user:
             # Check if password is right
-            if not check_password_hash(user.password_hash,password):
+            if not check_password_hash(user.password_hash, password):
                 return raise_message("Wrong!", "Wrong username or password")
 
             # Remember which user has logged in
             print(user.id)
             session["user_id"] = user.id
-            return raise_message("Success", "Login successfull")
+            flash("Successfully Logged in")
+            return redirect("/")
         else:
             return raise_message("Wrong!", "Wrong username or password")
     # Redirect to home if the request is GET
-    return redirect("/",code=302)
+    return redirect("/", code=302)
+
 
 @app.route('/logout')
 def logout():
     session.clear()
+    flash("Successfully Logged Out")
     return raise_message("Success", "Logged out")
 
 
-@app.route('/signup',methods=["GET","POST"])
+@app.route('/signup', methods=["GET", "POST"])
 def sign_up():
 
     if request.method == "POST":
@@ -105,29 +114,26 @@ def sign_up():
         password = request.form.get("password")
 
         if not (password and email and name):
-            return render_template("messageTemplate.html", title= "Oops", text= "Forgot something important")
-        email_exists = User.query.filter_by(email= email).first()
+            flash("Some fields were not correctly entered","error")
+            return render_template("messageTemplate.html", title="Oops", text="Forgot something important")
+        email_exists = User.query.filter_by(email=email).first()
         if email_exists:
-            return render_template("messageTemplate.html", title= "Oops", text= email_exists.email + " is already taken")
+            flash("Email already exists", "error")
+            return render_template("messageTemplate.html", title="Oops", text=email_exists.email + " is already taken")
 
         password_hash = generate_password_hash(password)
 
-        
-        # TODO Send authentication Email 
+        # TODO Send authentication Email
         # Add new user to the database
-        new_user = User(email= email, name= name, password_hash= password_hash)
+        new_user = User(email=email, name=name, password_hash=password_hash)
         db.session.add(new_user)
         db.session.commit()
 
-        print("User successfully created")
+        flash("Account Successfully Created")
         return redirect("/login")
-    if request.path=="/signup":
+    if request.path == "/signup":
         route = "signup"
-    return render_template("index.html",route=route)
-
-
-
-
+    return render_template("index.html", route=route)
 
 
 # TODO: Add a route for a currently existing user where other users can create events

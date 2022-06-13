@@ -27,3 +27,12 @@ window.onload = function () {
   //   e.preventDefault();
   // });
 };
+
+// Trigger Flashing toast Notifier
+const toastTrigger = document.getElementById('liveToastBtn')
+const toastLiveExample = document.getElementById('liveToast')
+
+if (toastLiveExample){
+  const toast = new bootstrap.Toast(toastLiveExample)
+  toast.show()
+}

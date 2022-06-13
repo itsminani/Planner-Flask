@@ -17,6 +17,10 @@ h1 {
   font-size: 8vw;
 }
 
+svg{
+  fill: var(--primary)
+}
+
 /* Navigation */
 .nav {
   border-radius: 2px;
@@ -102,6 +106,9 @@ body {
   color: var(--primary);
 }
 
+.error{
+  color: red;
+}
 .underlined {
   text-decoration: underlined;
 }

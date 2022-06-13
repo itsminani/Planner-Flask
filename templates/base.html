@@ -61,29 +61,71 @@
           >
         </li>
         {% if session["user_id"] %}
-          <li class="nav-item ms-auto">
-            <a class="nav-link active" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Events</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/account">Account</a>
-          </li>
+        <li class="nav-item ms-auto">
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Events</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/account">Account</a>
+        </li>
         {% else %}
-          <li class="nav-item ms-auto">
-            <a class="nav-link active" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/signup">Sign Up</a>
-          </li>
+        <li class="nav-item ms-auto">
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">Sign Up</a>
+        </li>
         {% endif%}
       </ul>
     </header>
     {%block content%}{%endblock%}
+    <!-- Message Flashing -->
+    {% if get_flashed_messages() %}
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div
+        id="liveToast"
+        class="toast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <!-- Notify When the message was an error -->
+          {% if get_flashed_messages(with_categories=true)[0][0] == "error" %}
+          <svg
+            class="bd-placeholder-img rounded me-2"
+            width="20"
+            height="20"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            preserveAspectRatio="xMidYMid slice"
+            focusable="false"
+          >
+            <rect class="primary"  width="100%" height="100%"></rect>
+          </svg>
+          <strong class="logo me-auto">🟥Error</strong>
+          {% else %}
+          <strong class="logo me-auto">Planner</strong>
+          {%endif%}
+          <small>Now</small>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="toast-body">{{ get_flashed_messages() | join(" ") }}
+        </div>
+      </div>
+    </div>
+    {% endif %}
     <!-- Modal -->
     <div
       class="modal fade"
