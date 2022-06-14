@@ -61,6 +61,34 @@ def base():
     return raise_message(session["user_id"], "You are logged in")
 
 
+@app.route('/events')
+@login_required
+def events():
+    user = User.query.filter_by(id=session["user_id"]).first()
+    if not user.confirmed:
+        flash("Please consider confirming your account to have more awesome features")
+    return render_template("events.html")
+
+
+@app.route('/create_event', methods=["GET", "POST"])
+@login_required
+def create_event():
+    email = request.form.get("email")
+    name = request.form.get("name")
+    password = request.form.get("password")
+
+    if not (password and email and name):
+        flash("Some fields were not correctly entered", "error")
+        return render_template("messageTemplate.html", title="Oops", text="Forgot something important")
+
+    new_event = Event()
+    db.session.add(new_event)
+    db.session.commit()
+
+    flash("Event successfully created")
+    return raise_message("What just happened")
+
+
 @app.route("/account")
 @login_required
 def account():
@@ -99,6 +127,12 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """
+    Logout the currently logged in used and delete cookies
+
+    Deletes all user session data and notify the user
+    """
+
     session.clear()
     flash("Successfully Logged Out")
     return raise_message("Success", "Logged out")
@@ -108,13 +142,12 @@ def logout():
 def sign_up():
 
     if request.method == "POST":
-        # TODO setup FLASH
         email = request.form.get("email")
         name = request.form.get("name")
         password = request.form.get("password")
 
         if not (password and email and name):
-            flash("Some fields were not correctly entered","error")
+            flash("Some fields were not correctly entered", "error")
             return render_template("messageTemplate.html", title="Oops", text="Forgot something important")
         email_exists = User.query.filter_by(email=email).first()
         if email_exists:

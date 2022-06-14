@@ -21,6 +21,10 @@ svg{
   fill: var(--primary)
 }
 
+.compulsory::after{
+  content: "*";
+  color: red;
+}
 /* Navigation */
 .nav {
   border-radius: 2px;
