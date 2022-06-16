@@ -1,3 +1,4 @@
+import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, flash, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
@@ -34,8 +35,6 @@ def after_request(response):
     return response
 
 # Handle pages that do not exist
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
@@ -73,20 +72,26 @@ def events():
 @app.route('/create_event', methods=["GET", "POST"])
 @login_required
 def create_event():
-    email = request.form.get("email")
-    name = request.form.get("name")
-    password = request.form.get("password")
+    title = request.form.get("title")
+    invitee = request.form.get("invitee")
+    platform = request.form.get("platform")
+    location_link = request.form.get("location_link")
+    details = request.form.get("details")
+    date = request.form.get("date")
+    time = request.form.get("time")
+    datetime1 = request.form.get("datetime")
 
-    if not (password and email and name):
+    if not (title and invitee  and platform):
         flash("Some fields were not correctly entered", "error")
-        return render_template("messageTemplate.html", title="Oops", text="Forgot something important")
-
-    new_event = Event()
+        return raise_message("Ooops", "Forgot something important",True)
+    print(datetime.time(00,00,00))
+    # Add event to database
+    new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details)
     db.session.add(new_event)
     db.session.commit()
 
     flash("Event successfully created")
-    return raise_message("What just happened")
+    return raise_message("title", invitee+"---"+platform+"---"+details+"---"+date+"---"+str(time.split(":"))+"==="+datetime1)
 
 
 @app.route("/account")
@@ -118,7 +123,7 @@ def login():
             print(user.id)
             session["user_id"] = user.id
             flash("Successfully Logged in")
-            return redirect("/")
+            return redirect("/account")
         else:
             return raise_message("Wrong!", "Wrong username or password")
     # Redirect to home if the request is GET
@@ -148,7 +153,7 @@ def sign_up():
 
         if not (password and email and name):
             flash("Some fields were not correctly entered", "error")
-            return render_template("messageTemplate.html", title="Oops", text="Forgot something important")
+            return raise_message("Ooops", "Forgot something important",True)
         email_exists = User.query.filter_by(email=email).first()
         if email_exists:
             flash("Email already exists", "error")
