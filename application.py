@@ -4,7 +4,7 @@ from flask import Flask, flash, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from models import *
-from _helpers import login_required, raise_message
+from _helpers import login_required, raise_message, send_simple_email
 
 application = Flask(__name__)
 app = application
@@ -57,7 +57,11 @@ def index():
 @app.route('/base')
 @login_required
 def base():
-    return raise_message(session["user_id"], "You are logged in")
+    user = User.query.filter_by(id=session["user_id"]).first()
+
+    email_response = send_simple_email("minanihertierluc@gmail.com", user.name)
+    print(email_response.content)
+    return raise_message(user.email, email_response)
 
 
 @app.route('/events')
@@ -84,7 +88,6 @@ def create_event():
     if not (title and invitee  and platform):
         flash("Some fields were not correctly entered", "error")
         return raise_message("Ooops", "Forgot something important",True)
-    print(datetime.time(00,00,00))
     # Add event to database
     new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details)
     db.session.add(new_event)
