@@ -1,10 +1,11 @@
 import datetime
+from click import confirm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, flash, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from models import *
-from _helpers import login_required, raise_message, send_simple_email
+from _helpers import login_required, raise_message, send_simple_email, confirm_email, confirmation_link
 
 application = Flask(__name__)
 app = application
@@ -59,9 +60,11 @@ def index():
 def base():
     user = User.query.filter_by(id=session["user_id"]).first()
 
-    email_response = send_simple_email("minanihertierluc@gmail.com", user.name)
-    print(email_response.content)
-    return raise_message(user.email, email_response)
+    # Test email sending
+    # email_response = send_simple_email("minanihertierluc@gmail.com", user.name)
+    # email_response2 = confirm_email("minanihertierluc@gmail.com", user.name)
+    response = confirmation_link(user.email,"minani")
+    return raise_message(user.email, response)
 
 
 @app.route('/events')

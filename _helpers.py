@@ -1,5 +1,8 @@
+import datetime
+import time
 from flask import redirect, render_template, session
 from functools import wraps
+import random
 import os
 import requests
 
@@ -26,7 +29,8 @@ def login_required(f):
     return decorated_function
 
 
-def send_simple_email(email="minanihertierluc@gmail.com", name="Minani"):
+
+def send_simple_email(email="minanihertierluc@gmail.com", name="user name", subject = "Email from planner", html = "<p>Welcome to our amazing app!</p>"):
     """
     Email sending function 
 
@@ -40,9 +44,41 @@ def send_simple_email(email="minanihertierluc@gmail.com", name="Minani"):
     return requests.post(
         "https://api.mailgun.net/v3/sandbox241fab3c279641bb9a54d5d29592be9e.mailgun.org/messages",
         auth=("api", os.environ.get("EMAIL_KEY")),
-        data={"from": "Mailgun Sandbox <postmaster@sandbox241fab3c279641bb9a54d5d29592be9e.mailgun.org>",
-              "to": "Name <"+email+">",
-              "subject": "Confirmation",
-              "text": "Thank you for confirming your email address with us!  You are truly awesome!"})
+        data={"from": "The Planner team <minanitest@gmail.com>",
+              "to": name+ " <"+email+">",
+              "subject": subject,
+              "html" : "<div style='text-align:center; color: grey'>"+html+"</div>"})
 
-print(send_simple_email().content)
+
+def confirm_email(email, name):
+    """
+    Function to send a confirmation 6 code digit to the users
+
+    email: email of receiver
+    name: name of person
+    """
+
+    user_code = random.randint(100000,999999)
+    # TODO commit the code to the database
+    # Tell the user that the code will expire in 3 days
+    expiry = datetime.date.today() + datetime.timedelta(days=3)
+    html_content = f"<h3>Please find below your activation code</h3><br> <h1>{user_code}</h1><p style='font-size:10px;'>your code will expire on {expiry} click <a href='rickroll.com'>Here</a> to get a new code </p>"
+    return send_simple_email(email, name, subject="Confirmation Code",html=html_content)
+
+def confirmation_link(email, name):
+    """
+    Function to send a confirmation link to the user's email address
+
+    email: email of receiver
+    name: name of person
+
+    returns link
+    """
+    hash = 0
+    # Very simple hash function that works by adding the ascii values in order to confirm the user's account
+    for x in email+name:
+        hash += ord(x)
+    # Just a way to complicate the hash
+    hash = hash*hash
+    hash = hash% 10000000
+    return hash
