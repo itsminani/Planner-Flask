@@ -170,7 +170,8 @@ body {
 
 .cardContainer {
   background-image: linear-gradient(to right, var(--secondary), white);
-  max-width: 30rem;
+  min-width: 400px;
+  max-width: 60%;
   max-height: 60rem;
   justify-content: center;
   padding: 2rem;

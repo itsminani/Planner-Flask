@@ -1,4 +1,5 @@
 import datetime
+import email
 from click import confirm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, flash, render_template, request, redirect, session
@@ -62,9 +63,9 @@ def base():
 
     # Test email sending
     # email_response = send_simple_email("minanihertierluc@gmail.com", user.name)
-    # email_response2 = confirm_email("minanihertierluc@gmail.com", user.name)
+    email_response2 = confirm_email("minanihertierluc@gmail.com", user.name)
     response = confirmation_link(user.email,"minani")
-    return raise_message(user.email, response)
+    return raise_message(user.email, str(response)+str(email_response2))
 
 
 @app.route('/events')
