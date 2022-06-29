@@ -1,0 +1,76 @@
+{%extends "base.html"%} {%block content%}
+<body>
+  <!-- Body -->
+  <div class="">
+    <main class="middle">
+      <div class="card cardContainer">
+        <p class="innerText form-text">Create a New Event</p>
+        <h4 class="innerText form-text primary">Details</h4>
+        <div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Event Time</th>
+                <th scope="col">Duration (Mins)</th>
+                <th scope="col">Title</th>
+                <th scope="col">Platform</th>
+                <th scope="col">Link</th>
+                <th scope="col">Invitees</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for event in events%}
+              <tr>
+                <td>{{event.event_time}}</td>
+                <td>{{event.duration}}</td>
+                <td>{{event.title}}</td>
+                <td>{{event.platform}}</td>
+                <a href="{{event.location_link}}"><td>Click Here</td></a>
+                <td>{{event.invitees}}</td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+        <div class="flex">
+          <a class="link-item" href="/create_event">
+            <button class="mbtn btn btn-lg primary-background secondary">
+              Create a new Event
+            </button>
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+<style>
+  .left {
+    text-align: left;
+  }
+  .form-text {
+    font-size: 1.3rem;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .title2 {
+    font-size: 6vh;
+  }
+  #button1 {
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+  }
+  #button1:hover {
+    color: var(--primary);
+  }
+  .link-item {
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex {
+    display: flex;
+  }
+</style>
+{%endblock%}

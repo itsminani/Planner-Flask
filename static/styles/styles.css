@@ -143,9 +143,14 @@ body {
   transition: transform 0.2s;
 }
 
+.primary-background {
+  background-color: var(--primary);
+}
+
 .mbtn[id="button1"] {
   background-color: var(--primary);
 }
+
 .mbtn[id="button2"] {
   color: var(--secondary);
 }

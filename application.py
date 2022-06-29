@@ -72,33 +72,52 @@ def base():
 @login_required
 def events():
     user = User.query.filter_by(id=session["user_id"]).first()
+    if not user:
+        return redirect("/")
     if not user.confirmed:
         flash("Please consider confirming your account to have more awesome features")
-    return render_template("events.html")
+    return render_template("createEvent.html")
 
 
 @app.route('/create_event', methods=["GET", "POST"])
 @login_required
 def create_event():
-    title = request.form.get("title")
-    invitee = request.form.get("invitee")
-    platform = request.form.get("platform")
-    location_link = request.form.get("location_link")
-    details = request.form.get("details")
-    date = request.form.get("date")
-    time = request.form.get("time")
-    datetime1 = request.form.get("datetime")
+    if request.method == "GET":
+        return render_template("createEvent.html")
+    else:
+        # When method comes in as create event
+        title = request.form.get("title")
+        invitee = request.form.get("invitee")
+        platform = request.form.get("platform")
+        location_link = request.form.get("location_link")
+        details = request.form.get("details")
+        event_time = request.form.get("datetime")
+        duration = request.form.get("duration")
+        print(duration)
+        time_object = datetime.datetime.strptime(event_time,'%Y-%m-%dT%H:%M')
 
-    if not (title and invitee  and platform):
-        flash("Some fields were not correctly entered", "error")
-        return raise_message("Ooops", "Forgot something important",True)
-    # Add event to database
-    new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details)
-    db.session.add(new_event)
-    db.session.commit()
+        if not (title and invitee  and platform):
+            flash("Some fields were not correctly entered", "error")
+            return raise_message("Ooops", "Forgot something important",True)
 
-    flash("Event successfully created")
-    return raise_message("title", invitee+"---"+platform+"---"+details+"---"+date+"---"+str(time.split(":"))+"==="+datetime1)
+        # Add event to database
+        new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
+        db.session.add(new_event)
+        db.session.commit()
+
+        flash("Event successfully created"+str(time_object))
+        return raise_message("title", invitee+"---"+platform+"---"+details+"---"+str(time_object)+duration)
+
+
+
+
+@app.route("/my_events")
+@login_required
+def my_events():
+    events = Event.query.filter_by(user_id=session["user_id"])
+    for event in events:
+        print(event.duration)
+    return render_template("myEvents.html",events = events)
 
 
 @app.route("/account")

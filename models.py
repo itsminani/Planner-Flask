@@ -6,7 +6,6 @@ from sqlalchemy import ForeignKey
 # Instanciate database without having cirvular import issue
 db = SQLAlchemy()
 
-
 class User(db.Model):
     # ! Create users database
     # email, name, hashed_password, confirmed, id
@@ -32,10 +31,14 @@ class Event(db.Model):
     platform = db.Column(db.String(120), nullable=False)  # Online or in person
     location_link = db.Column(db.String(120))
     invitees = db.Column(db.String(120), nullable=False)
-    date = db.Column(db.DateTime, default=datetime.datetime.now)
-    time = db.Column(db.DateTime, default=datetime.datetime.now)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    # Event timing
+    event_time = db.Column(db.DateTime, default=datetime.datetime.now)
+    duration= db.Column(db.Integer)
     details = db.Column(db.String(1000))
+    
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
     # Relationships
     creator_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -44,15 +47,18 @@ class Event(db.Model):
         return "<Event ID: %r>" % self.id
 
 
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
+    
     # Run this file directly to create the database tables.
     from application import app
     db = SQLAlchemy(app)
 
+
     r = input(
         "Are you sure you would like to drop and delete all the elements of this database? ")
-    # db.drop_all() if r == "delete" else print("No tables Dropped")
+    db.drop_all() if r == "delete" else print("No tables Dropped")
     # print("Creating database tables...")
     db.create_all()
     print("Done!")

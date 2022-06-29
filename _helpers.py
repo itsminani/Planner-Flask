@@ -1,5 +1,4 @@
 import datetime
-import time
 from flask import redirect, render_template, session
 from functools import wraps
 import random
@@ -82,3 +81,4 @@ def confirmation_link(email, name):
     hash = hash*hash
     hash = hash% 10000000
     return hash
+
