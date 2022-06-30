@@ -28,7 +28,6 @@ def login_required(f):
     return decorated_function
 
 
-
 def send_simple_email(email="minanihertierluc@gmail.com", name="user name", subject = "Email from planner", html = "<p>Welcome to our amazing app!</p>"):
     """
     Email sending function 
@@ -81,4 +80,18 @@ def confirmation_link(email, name):
     hash = hash*hash
     hash = hash% 10000000
     return hash
+
+def create_event_email(email,name, invitee):
+    """
+    An email that will be automatically sent to users when an event is created
+
+    email: Destination email
+    name: The destination's name
+    """
+    # Email to the event creator
+    send_simple_email(email = email, name=name,subject="Confirmation For new Event")
+    # Email to the invitees
+    for person in invitee:
+        # Send an email to all the invitees in this event
+        send_simple_email(email = person, name=name,subject="Invitation for event",html="Invitation for event")
 
