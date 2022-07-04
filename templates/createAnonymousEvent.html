@@ -1,0 +1,160 @@
+{%extends "base.html"%} {%block content%}
+<body>
+  <!-- Body -->
+  <div class="">
+    <main class="middle">
+      <div class="card cardContainer">
+        <p class="innerText form-text">Create a New Event on <b>{{name}}'s</b> calendar</p>
+        <h4 class="innerText form-text primary">Please make sure you enter an accurate email address</h4>
+        <form action="create_event" class="left form-text" method="post">
+          
+          <div class="input mb-3">
+            <label for="exampleFormControlInput1" class="form-label"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              placeholder="email@example.com"
+              name="invitee"
+              class="rounded form-control"
+            />
+          </div>
+          
+          <div class="input mb-3">
+            <label for="exampleFormControlInput1" class="form-label compulsory"
+              >Event Title</label
+            >
+            <input
+              required
+              type="text"
+              name="title"
+              class="rounded form-control"
+              autofocus
+            />
+          </div>
+
+          <div class="input mb-3">
+            <label for="exampleFormControlInput1" class="form-label"
+              >Start time</label
+            >
+            <input
+              type="datetime-local"
+              name="datetime"
+              class="rounded form-control"
+            />
+            <!-- All day checkmark -->
+            <!-- <input type="checkbox" id="allday" name="allday"
+                  checked>
+                  <label for="allday">allday?</label> -->
+          </div>
+
+          <div class="input mb-3">
+            <label for="exampleFormControlInput2" class="form-label"
+              >Duration</label
+            >
+            <select name="duration" type="select" class="rounded form-select">
+              {% for i in range(15,180,15) %} {%if i>=60 and i<120 %}
+              <option value="{{i}}">1 hour {{i%60}} mins</option>
+              {%elif i>=120%}
+              <option value="{{i}}">2 hours {{i%60}} mins</option>
+              {%else%}
+              <option value="{{i}}">{{i}} minutes</option>
+              {%endif%} {%endfor%}
+            </select>
+          </div>
+
+          <div class="input mb-3">
+            <label for="exampleFormControlInput2" class="form-label compulsory"
+              >Platform</label
+            >
+            <select
+              name="platform"
+              type="select"
+              class="rounded form-select"
+              required
+            >
+              <option value="Online">Online</option>
+              <option value="In Person">In Person</option>
+            </select>
+          </div>
+
+          <div class="input mb-3">
+            <label for="location_link" class="form-label">Location</label>
+            <input
+              type="url"
+              placeholder="GPS location or zoom link"
+              name="location_link"
+              class="rounded form-control"
+            />
+          </div>
+
+          <div class="input mb-3">
+            <label for="exampleFormControlInput3" class="form-label"
+              >Detailed Message</label
+            >
+            <textarea
+              type="textarea"
+              name="details"
+              class="rounded form-control"
+            >
+            </textarea>
+          </div>
+          <input
+            class="btn btn-success btn-md"
+            id="modalButton"
+            label="Create Account"
+            type="submit"
+          />
+        </form>
+      </div>
+      <div class="flex">
+        <button
+          id="button1"
+          class="mbtn btn btn-lg"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          App theme!
+        </button>
+      </div>
+      <div class="flex">
+        <a class="link-item" href="/logout">
+          <button id="button2" class="mbtn btn btn-lg btn-danger">
+            Logout
+          </button>
+        </a>
+      </div>
+    </main>
+  </div>
+</body>
+
+<style>
+  .left {
+    text-align: left;
+  }
+  .form-text {
+    font-size: 1.3rem;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .title2 {
+    font-size: 6vh;
+  }
+  #button1 {
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+  }
+  #button1:hover {
+    color: var(--primary);
+  }
+  .link-item {
+    margin: 10px auto;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex {
+    display: flex;
+  }
+</style>
+{%endblock%}

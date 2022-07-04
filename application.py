@@ -6,7 +6,7 @@ from flask import Flask, flash, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from models import *
-from _helpers import login_required, raise_message, send_simple_email, confirm_email, confirmation_link
+from _helpers import login_required, raise_message, send_simple_email, confirm_email, confirmation_link, create_event_email
 
 application = Flask(__name__)
 app = application
@@ -79,12 +79,21 @@ def events():
     return render_template("createEvent.html")
 
 
-@app.route('/create_event', methods=["GET", "POST"])
-@login_required
-def create_event():
+@app.route('/user_event/<user_id>')
+def anonymous_user_event(user_id):
+    """
+    Create an event from an unauthenticated user
+
+    user_id will be the id of the person you want to create the event with
+    """
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return raise_message("User not found", str(user_id)+" ID does not exist anywhere in our system",True)
+    
     if request.method == "GET":
-        return render_template("createEvent.html")
+        return render_template("createAnonymousEvent.html", name = user.name)
     else:
+        user = User.query.filter_by(id=session["user_id"]).first()
         # When method comes in as create event
         title = request.form.get("title")
         invitee = request.form.get("invitee")
@@ -93,7 +102,40 @@ def create_event():
         details = request.form.get("details")
         event_time = request.form.get("datetime")
         duration = request.form.get("duration")
-        print(duration)
+        time_object = datetime.datetime.strptime(event_time,'%Y-%m-%dT%H:%M')
+
+        if not (title and invitee  and platform):
+            flash("Some fields were not correctly entered", "error")
+            return raise_message("Ooops", "Forgot something important",True)
+
+        # Add event to database
+        new_event = Event(user_id = session["user_id"],creator_id = "Invitee",title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
+        db.session.add(new_event)
+        db.session.commit()
+        create_event_email(user.email, user.name, invitee, str(event_time))
+
+        flash("Event successfully created"+str(time_object))
+        return raise_message("title", "We will let "+ user.name+ "about the created event. Just sit tight... We will send you a confirmation email for the event.")
+
+
+@app.route('/create_event', methods=["GET", "POST"])
+@login_required
+def create_event():
+    """
+    A create event route
+    """
+    if request.method == "GET":
+        return render_template("createEvent.html")
+    else:
+        user = User.query.filter_by(id=session["user_id"]).first()
+        # When method comes in as create event
+        title = request.form.get("title")
+        invitee = request.form.get("invitee")
+        platform = request.form.get("platform")
+        location_link = request.form.get("location_link")
+        details = request.form.get("details")
+        event_time = request.form.get("datetime")
+        duration = request.form.get("duration")
         time_object = datetime.datetime.strptime(event_time,'%Y-%m-%dT%H:%M')
 
         if not (title and invitee  and platform):
@@ -104,6 +146,7 @@ def create_event():
         new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
         db.session.add(new_event)
         db.session.commit()
+        create_event_email(user.email, user.name, invitee, str(event_time))
 
         flash("Event successfully created"+str(time_object))
         return raise_message("title", invitee+"---"+platform+"---"+details+"---"+str(time_object)+duration)
@@ -202,7 +245,7 @@ def sign_up():
 
 # TODO: Add a route for a currently existing user where other users can create events
 # DONE: create a user database
-# TODO: create an event database
+# DONE: create an event database
 # TODO: setup email verification for creating accounts
-# TODO: setup emails for creating events
+# DONE: setup emails for creating events
 # TODO: check in database whether person has free periods at that time

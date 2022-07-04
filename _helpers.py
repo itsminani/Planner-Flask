@@ -16,7 +16,7 @@ def raise_message(title, msg="message goes here", error= False):
 
 def login_required(f):
     """
-    Decorate routes to require login.
+    Decorate routes to require login    .
 
     https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
     """
@@ -81,17 +81,21 @@ def confirmation_link(email, name):
     hash = hash% 10000000
     return hash
 
-def create_event_email(email,name, invitee):
+def create_event_email(email,name, invitee, event_time):
     """
     An email that will be automatically sent to users when an event is created
 
     email: Destination email
     name: The destination's name
+    invitee: email of the inviteed person to the meeting
+    event_time: string of the datetime object
     """
+
     # Email to the event creator
-    send_simple_email(email = email, name=name,subject="Confirmation For new Event")
+    html_for_confirmation = f"""<h2>Event Confirmation</h2><br> <p style='font-size:18px;'>Your event on {event_time} has been successfully created. click <a href='http://127.0.0.1:5000/my_events'>Here</a> to edit this event </p>"""
+    print(send_simple_email(email = email, name=name,subject="Confirmation For new Event",html=html_for_confirmation))
+    
     # Email to the invitees
-    for person in invitee:
-        # Send an email to all the invitees in this event
-        send_simple_email(email = person, name=name,subject="Invitation for event",html="Invitation for event")
+    html_for_invitee = f"""<h2>Invitation</h2><br> <p style='font-size:18px;'>{name} has invited you to an event on {event_time} click <a href='http://127.0.0.1:5000/my_events'>Here</a> to attend this event </p>"""
+    print(send_simple_email(email = invitee, name=invitee,subject="Invitation to event",html=html_for_invitee))
 
