@@ -79,7 +79,7 @@ def events():
     return render_template("createEvent.html")
 
 
-@app.route('/user_event/<user_id>')
+@app.route('/user_event/<int:user_id>')
 def anonymous_user_event(user_id):
     """
     Create an event from an unauthenticated user
@@ -87,6 +87,13 @@ def anonymous_user_event(user_id):
     user_id will be the id of the person you want to create the event with
     """
     user = User.query.filter_by(id=user_id).first()
+
+    # Check if the user is actually logged in
+    # Avoid user from creating an event through their own path
+    if "user_id" in session and session["user_id"] == user_id:
+        return redirect("/create_event")
+
+    # TODO FIX CREATE EVENT ISSUE
     if not user:
         return raise_message("User not found", str(user_id)+" ID does not exist anywhere in our system",True)
     
