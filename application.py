@@ -156,7 +156,7 @@ def create_event():
         for event in events:
             event_end_time = event.event_time + datetime.timedelta(minutes= 15 if not event.duration else event.duration)
             if (time_object>=event.event_time and time_object<event_end_time) or end_time>event.event_time:
-                return raise_message("Mbokolo ndagsw urarenze saana","Byahatari")
+                return raise_message("Event Collision Found","Title:"+ event.title + " event is already planned at this time")
             
         # Add event to database
         new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
