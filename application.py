@@ -1,5 +1,4 @@
 import datetime
-import email
 from click import confirm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, flash, render_template, request, redirect, session
@@ -48,9 +47,8 @@ def server_error(e):
     # note that we set the 404 status explicitly
     return raise_message(404, "Oops, a big Oopsie, Server error", True)
 
+
 # Routing and navigation
-
-
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -93,7 +91,6 @@ def anonymous_user_event(user_id):
     if "user_id" in session and session["user_id"] == user_id:
         return redirect("/create_event")
 
-    # TODO FIX CREATE EVENT ISSUE
     if not user:
         return raise_message("User not found", str(user_id)+" ID does not exist anywhere in our system",True)
     
@@ -153,14 +150,11 @@ def create_event():
         if not (title and invitee  and platform):
             flash("Some fields were not correctly entered", "error")
             return raise_message("Ooops", "Forgot something important",True)
-            
+
         # Check whether there is no event scheduled in that time
         events = Event.query.filter(Event.event_time.like("%"+str(time_object)[0:10]+"%")).all()
         for event in events:
             event_end_time = event.event_time + datetime.timedelta(minutes= 15 if not event.duration else event.duration)
-            print(event.event_time)
-            print(time_object)
-            print(event_end_time)
             if (time_object>=event.event_time and time_object<event_end_time) or end_time>event.event_time:
                 return raise_message("Mbokolo ndagsw urarenze saana","Byahatari")
             
@@ -265,9 +259,9 @@ def sign_up():
     return render_template("index.html", route=route)
 
 
-# TODO: Add a route for a currently existing user where other users can create events
+# DONE: Add a route for a currently existing user where other users can create events
 # DONE: create a user database
 # DONE: create an event database
 # TODO: setup email verification for creating accounts
 # DONE: setup emails for creating events
-# TODO: check in database whether person has free periods at that time
+# DONE: check in database whether person has free periods at that time
