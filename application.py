@@ -79,7 +79,7 @@ def events():
     return render_template("createEvent.html")
 
 
-@app.route('/user_event/<int:user_id>')
+@app.route('/user_event/<int:user_id>', methods=["GET", "POST"])
 def anonymous_user_event(user_id):
     """
     Create an event from an unauthenticated user
@@ -98,11 +98,11 @@ def anonymous_user_event(user_id):
         return raise_message("User not found", str(user_id)+" ID does not exist anywhere in our system",True)
     
     if request.method == "GET":
-        return render_template("createAnonymousEvent.html", name = user.name)
+        return render_template("createAnonymousEvent.html", name = user.name, user_id=user_id)
     else:
-        user = User.query.filter_by(id=session["user_id"]).first()
         # When method comes in as create event
         title = request.form.get("title")
+        calendar_owner = request.form.get("calendar_owner")
         invitee = request.form.get("invitee")
         platform = request.form.get("platform")
         location_link = request.form.get("location_link")
@@ -110,19 +110,21 @@ def anonymous_user_event(user_id):
         event_time = request.form.get("datetime")
         duration = request.form.get("duration")
         time_object = datetime.datetime.strptime(event_time,'%Y-%m-%dT%H:%M')
-
+        
+        print("BIG DEBUGGING GOES BRRRRRRR")
+        print(calendar_owner)
         if not (title and invitee  and platform):
             flash("Some fields were not correctly entered", "error")
             return raise_message("Ooops", "Forgot something important",True)
 
         # Add event to database
-        new_event = Event(user_id = session["user_id"],creator_id = "Invitee",title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
+        new_event = Event(user_id = calendar_owner,creator_id = "Invitee",title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
         db.session.add(new_event)
         db.session.commit()
         create_event_email(user.email, user.name, invitee, str(event_time))
 
         flash("Event successfully created"+str(time_object))
-        return raise_message("title", "We will let "+ user.name+ "about the created event. Just sit tight... We will send you a confirmation email for the event.")
+        return raise_message("title", "We will let "+ user.name+ " know about the created event. Just sit tight ........ We will send you a co  nfirmation email for the event.")
 
 
 @app.route('/create_event', methods=["GET", "POST"])
@@ -143,12 +145,25 @@ def create_event():
         details = request.form.get("details")
         event_time = request.form.get("datetime")
         duration = request.form.get("duration")
+        # Datetime object blueprint for event start time
         time_object = datetime.datetime.strptime(event_time,'%Y-%m-%dT%H:%M')
-
+        # end_time which will be a variable that will be used to make sur that no 2 events will ever collide
+        end_time = time_object+ datetime.timedelta(minutes=int(duration))
+        
         if not (title and invitee  and platform):
             flash("Some fields were not correctly entered", "error")
             return raise_message("Ooops", "Forgot something important",True)
-
+            
+        # Check whether there is no event scheduled in that time
+        events = Event.query.filter(Event.event_time.like("%"+str(time_object)[0:10]+"%")).all()
+        for event in events:
+            event_end_time = event.event_time + datetime.timedelta(minutes= 15 if not event.duration else event.duration)
+            print(event.event_time)
+            print(time_object)
+            print(event_end_time)
+            if (time_object>=event.event_time and time_object<event_end_time) or end_time>event.event_time:
+                return raise_message("Mbokolo ndagsw urarenze saana","Byahatari")
+            
         # Add event to database
         new_event = Event(user_id = session["user_id"],creator_id = session["user_id"],title = title, platform =platform , location_link= location_link, invitees=invitee, details= details, event_time = time_object, duration= duration)
         db.session.add(new_event)
@@ -164,10 +179,10 @@ def create_event():
 @app.route("/my_events")
 @login_required
 def my_events():
-    events = Event.query.filter_by(user_id=session["user_id"])
+    events = Event.query.filter(Event.event_time.like("%2022%")).all()
     for event in events:
-        print(event.duration)
-    return render_template("myEvents.html",events = events)
+        print(event.event_time)
+    return render_template("myEvents.html",events = events, user_id = session["user_id"])
 
 
 @app.route("/account")

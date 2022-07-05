@@ -6,8 +6,18 @@
       <div class="card cardContainer">
         <p class="innerText form-text">Create a New Event on <b>{{name}}'s</b> calendar</p>
         <h4 class="innerText form-text primary">Please make sure you enter an accurate email address</h4>
-        <form action="user_event" class="left form-text" method="post">
+        <form action="" class="left form-text" method="post">
           
+          <!-- Create a hidden field for the users ID -->
+          
+          <input
+              type="hidden"
+              placeholder="email@example.com"
+              name="calendar_owner"
+              value={{user_id}}
+              class="rounded form-control"
+          />
+
           <div class="input mb-3">
             <label for="exampleFormControlInput1" class="form-label"
               >Email Address</label

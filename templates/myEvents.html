@@ -12,6 +12,7 @@
               <tr>
                 <th scope="col">Event Time</th>
                 <th scope="col">Duration (Mins)</th>
+                <th scope="col">Organiser</th>
                 <th scope="col">Title</th>
                 <th scope="col">Platform</th>
                 <th scope="col">Link</th>
@@ -23,6 +24,7 @@
               <tr>
                 <td>{{event.event_time}}</td>
                 <td>{{event.duration}}</td>
+                <td>{{ "Me" if user_id==event.creator_id else "Invitee" }} </td>
                 <td>{{event.title}}</td>
                 <td>{{event.platform}}</td>
                 <a href="{{event.location_link}}"><td>Click Here</td></a>
