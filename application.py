@@ -108,8 +108,6 @@ def anonymous_user_event(user_id):
         duration = request.form.get("duration")
         time_object = datetime.datetime.strptime(event_time,'%Y-%m-%dT%H:%M')
         
-        print("BIG DEBUGGING GOES BRRRRRRR")
-        print(calendar_owner)
         if not (title and invitee  and platform):
             flash("Some fields were not correctly entered", "error")
             return raise_message("Ooops", "Forgot something important",True)
@@ -174,8 +172,7 @@ def create_event():
 @login_required
 def my_events():
     events = Event.query.filter(Event.event_time.like("%2022%")).all()
-    for event in events:
-        print(event.event_time)
+    
     return render_template("myEvents.html",events = events, user_id = session["user_id"])
 
 
@@ -205,7 +202,6 @@ def login():
                 return raise_message("Wrong!", "Wrong username or password")
 
             # Remember which user has logged in
-            print(user.id)
             session["user_id"] = user.id
             flash("Successfully Logged in")
             return redirect("/account")
