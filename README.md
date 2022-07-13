@@ -25,6 +25,7 @@ You will need an **API key** from [mailgun]("https://signup.mailgun.com/new/sign
 
 #### Windows CMD or Powershell run the following
 ```
+pip install -r requirements **or** pip3 install -r requirements 
 set FLASK_APP application.py
 set FLASK_ENV development
 set EMAIL_KEY MAILGUN_API_KEY
@@ -32,6 +33,7 @@ set EMAIL_KEY MAILGUN_API_KEY
 
 #### WSL, Ubuntu or Mac OS
 ```
+pip install -r requirements **or** pip3 install -r requirements 
 export FLASK_APP=application.py
 export FLASK_ENV=development
 export EMAIL_KEY= MAILGUN_API_KEY
